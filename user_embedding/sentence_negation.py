@@ -15,11 +15,11 @@ linear_layer = model['linear.weight']
 # Convert the linear layer to a numpy matrix
 weights = linear_layer.cpu().numpy()
 
-# Perform eigenvalue decomposition
-eigenvalues, eigenvectors = eigh(weights)
+# # Perform eigenvalue decomposition
+# eigenvalues, eigenvectors = eigh(weights)
 
-# Print the eigenvalues and eigenvectors
-print("Eigenvalues:")
-print(eigenvalues)
-print("Eigenvectors:")
-print(eigenvectors)
+# # Print the eigenvalues and eigenvectors
+# print("Eigenvalues:")
+# print(eigenvalues)
+# print("Eigenvectors:")
+# print(eigenvectors)

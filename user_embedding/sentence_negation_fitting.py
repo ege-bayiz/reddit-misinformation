@@ -46,7 +46,7 @@ model = linearRegression(inputDim, outputDim)
 if torch.cuda.is_available():
     model.cuda()
 
-loss_fn = torch.nn.MSELoss() 
+loss_fn = torch.nn.CosineEmbeddingLoss() 
 optimizer = torch.optim.SGD(model.parameters(), lr=learningRate)
 
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -71,7 +71,7 @@ for epoch in range(epochs):
         outputs = model(inputs)
 
         # get loss for the predicted output
-        loss = loss_fn(outputs, des_outputs)
+        loss = loss_fn(outputs, des_outputs, torch.ones(inputs.size(0)).cuda())
         # get gradients w.r.t to parameters
         loss.backward()
 
@@ -96,7 +96,7 @@ for epoch in range(epochs):
         for i, vdata in enumerate(validation_loader):
             vinputs, vlabels = vdata
             voutputs = model(vinputs)
-            vloss = loss_fn(voutputs, vlabels)
+            vloss = loss_fn(voutputs, vlabels, torch.ones(inputs.size(0)).cuda())
             running_vloss += vloss
 
     avg_vloss = running_vloss / (i + 1)
