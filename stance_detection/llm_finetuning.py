@@ -10,7 +10,7 @@ from transformers import (
 from peft import (LoraConfig, AutoPeftModelForCausalLM, PeftModel)
 from trl import SFTTrainer
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "3,4"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 print(f'running on cuda device {torch.cuda.current_device()}')
 max_memory={0: "0.0GB", 1: "0GB", 2: "0GB", 3: "22GB", 4: "22GB", 5: "0GB", 6: "0GB", 7: "0GB", 'cpu': "10GB"}

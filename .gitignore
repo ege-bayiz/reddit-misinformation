@@ -161,11 +161,4 @@ cython_debug/
 
 
 ### Added by me
-<<<<<<< HEAD
 stance_detection/DEBAGREEMENT_data
-results_modified
-stance-detection/llama-2-7b-reddit_stance_det_lora
-
-=======
-stance_detection/DEBAGREEMENT_data
->>>>>>> parent of f6c309a... gitignore update
