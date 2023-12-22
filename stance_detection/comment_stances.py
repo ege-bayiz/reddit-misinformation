@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 import time
 import datetime as dt
 import warnings
@@ -11,8 +12,9 @@ from transformers import (
     TrainingArguments,
     pipeline
 )
-from peft import (LoraConfig, AutoPeftModelForCausalLM, PeftModel)
+from peft import (LoraConfig, PeftConfig, AutoPeftModelForCausalLM, PeftModel)
 import os
+import shutil
 
 ## Loading the datasets
 Tier_1  = pd.read_pickle('stance_detection/curated_datasets/Tier_1.pickle')
@@ -64,14 +66,40 @@ base_model.config.pretraining_tp = 1
 
 print(base_model.hf_device_map)
 
-base_text_gen = pipeline(task="text-generation", model=base_model, tokenizer=llama_tokenizer, max_new_tokens=5)
+lora_id = "stance_detection/trained_lora/llama-2-7b-reddit_stance_det_lora"
+config = PeftConfig(lora_id)
+inference_model = PeftModel.from_pretrained(base_model, lora_id)
 
-row = data.iloc[0]
+
+
+## Label generation loop
+text_gen = pipeline(task="text-generation", model=inference_model, tokenizer=llama_tokenizer, max_new_tokens=5)
 query_head = "You are a helpful, respectful, and honest assistant that detects the stance of a comment with respect to its parent. Stance detection is the process of determining whether the author of a comment is in support of or against a given parent. You are provided with:\n post: the text you that is the root of discussion.\n parent:  the text which the comment is a reply towards.\n comment: text that you identify the stance from.\n\nYou will return the stance of the comment against the parent. Only return the stance against the parent and not the original post. Always answer from the possible options given below: \n support: The comment has a positive or supportive attitude towards the post, either explicitly or implicitly. \n against: The comment opposes or criticizes the post, either explicitly or implicitly. \n none: The comment is neutral or does not have a stance towards the post. \n unsure: It is not possible to make a decision based on the information at hand."
-query = "<SYS> query_head </SYS>" + "\n\n" + "post: " + row['submission_body'] + "\n" + "parent: " + row['submission_body'] + "\n" + "comment: " + row['body'] + "\n" + "stance: "
-query = "[INST] " + query + "[/INST]"
 
-output = base_text_gen(f"<s>[INST] {query} [/INST]")
+data['stance'] = np.nan
+# Define the save path and backup path
+save_path = 'stance_detection/labeled_no_politics/Tier_1.pickle'
+backup_path = 'stance_detection/labeled_no_politics/Tier_1_backup.pickle'
 
+ii = 0
+# Iterate over each row and apply the placeholder function
+for index, row in tqdm(data.iterrows()):
+    
+    query = f"<SYS> {query_head} </SYS>" + "\n\n" + "post: " + row['submission_body'] + "\n" + "parent: " + row['submission_body'] + "\n" + "comment: " + row['body'] + "\n" + "stance: "
+    query = "[INST]" + query + "[/INST]"
 
-print(output[0]['generated_text'])
+    output = text_gen(f"<s>{query}]")
+    generated_text = output[0]['generated_text']
+    predicted_label = generated_text.split('[/INST]')[1].split('</s>')[0]
+    data.at[index, 'stance'] = predicted_label
+    
+    # Save every 1000 rows
+    if index % 100 == 0:
+        print(generated_text)
+        # Create a backup of the old save
+        if os.path.exists(save_path):
+            shutil.copyfile(save_path, backup_path)
+        
+        # Save the data to the path
+        data.to_pickle(save_path)
+    ii += 1

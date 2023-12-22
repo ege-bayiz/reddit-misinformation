@@ -43,18 +43,8 @@ print(base_model.hf_device_map)
 base_text_gen = pipeline(task="text-generation", model=base_model, tokenizer=llama_tokenizer, max_new_tokens=5)
 
 query_head = "You are a helpful, respectful, and honest assistant that detects the stance of a comment with respect to its parent. Stance detection is the process of determining whether the author of a comment is in support of or against a given parent. You are provided with:\n post: the text you that is the root of discussion.\n parent:  the text which the comment is a reply towards.\n comment: text that you identify the stance from.\n\nYou will return the stance of the comment against the parent. Only return the stance against the parent and not the original post. Always answer from the possible options given below: \n support: The comment has a positive or supportive attitude towards the post, either explicitly or implicitly. \n against: The comment opposes or criticizes the post, either explicitly or implicitly. \n none: The comment is neutral or does not have a stance towards the post. \n unsure: It is not possible to make a decision based on the information at hand."
-#query = "<SYS> query_head </SYS>" + "\n\n" + "post: " + row['submission_text'] + "\n" + "parent: " + row['body_parent'] + "\n" + "comment: " + row['body_child'] + "\n" + "stance: "
-#query = "[INST] " + query + "[/INST]"
-'''
-query_tail="""post: Trump praises very smart Putin
-comment: Maybe Trump is what democrats and republicans need to heal their relationship and start acting like adults again. We have a common cause: keeping this guy from doing permanent damage to a country we love.  The extremism that has entered US politics is stopping us from actually finding any common ground. \n\nIt's a big MAYBE, but it's possible.
-stance:"""
-
-query_head = query_head.strip()
-
-output = base_text_gen(f"<s>[INST] {query_head + query_tail} [/INST]")
-print(output[0]['generated_text'])
-'''
+#query = f"<SYS> {query_head} </SYS>" + "\n\n" + "post: " + row['submission_text'] + "\n" + "parent: " + row['body_parent'] + "\n" + "comment: " + row['body_child'] + "\n" + "stance: "
+#query = "[INST]" + query + "[/INST]"
 
 
 training_data = load_from_disk('stance_detection/curated_datasets/debagreement_data_10000/train')
