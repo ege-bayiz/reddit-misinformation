@@ -162,3 +162,6 @@ cython_debug/
 
 ### Added by me
 stance_detection/DEBAGREEMENT_data
+stance_detection/curated_datasets
+stance_detection/llama-2-7b-reddit_stance_det_2
+reddit_data
