@@ -24,7 +24,7 @@ Tier_1=Tier_1[Tier_1['sub']!='politics']
 # Min number of words in body (3 right now)
 Tier_1=Tier_1[Tier_1['body'].apply(lambda x: len(x.split()))>2]
 # Years that you want your tier in
-Year=[2017]
+Year=[2018]
 Tier_1=Tier_1[Tier_1['Y'].isin(Year)]
 
 # Some more filters on tiers if needed
@@ -66,25 +66,24 @@ base_model.config.pretraining_tp = 1
 
 print(base_model.hf_device_map)
 
-lora_id = "stance_detection/trained_lora/llama-2-7b-reddit_stance_det_lora"
+lora_id = "stance-detection/trained_lora/llama-2-7b-reddit_stance_det_lora_2"
 config = PeftConfig(lora_id)
 inference_model = PeftModel.from_pretrained(base_model, lora_id)
 
 
 
 ## Label generation loop
-text_gen = pipeline(task="text-generation", model=inference_model, tokenizer=llama_tokenizer, max_new_tokens=5)
+text_gen = pipeline(task="text-generation", model=inference_model, tokenizer=llama_tokenizer, max_new_tokens=8)
 query_head = "You are a helpful, respectful, and honest assistant that detects the stance of a comment with respect to its parent. Stance detection is the process of determining whether the author of a comment is in support of or against a given parent. You are provided with:\n post: the text you that is the root of discussion.\n parent:  the text which the comment is a reply towards.\n comment: text that you identify the stance from.\n\nYou will return the stance of the comment against the parent. Only return the stance against the parent and not the original post. Always answer from the possible options given below: \n support: The comment has a positive or supportive attitude towards the post, either explicitly or implicitly. \n against: The comment opposes or criticizes the post, either explicitly or implicitly. \n none: The comment is neutral or does not have a stance towards the post. \n unsure: It is not possible to make a decision based on the information at hand."
 
-data['stance'] = np.nan
+data['stance'] = 'unsure'
 # Define the save path and backup path
-save_path = 'stance_detection/labeled_no_politics/Tier_1.pickle'
-backup_path = 'stance_detection/labeled_no_politics/Tier_1_backup.pickle'
+save_path = 'stance_detection/labeled_no_politics/2018/Tier_1.pickle'
+backup_path = 'stance_detection/labeled_no_politics/2018/Tier_1_backup.pickle'
 
 ii = 0
 # Iterate over each row and apply the placeholder function
 for index, row in tqdm(data.iterrows()):
-    
     query = f"<SYS> {query_head} </SYS>" + "\n\n" + "post: " + row['submission_body'] + "\n" + "parent: " + row['submission_body'] + "\n" + "comment: " + row['body'] + "\n" + "stance: "
     query = "[INST]" + query + "[/INST]"
 
@@ -94,7 +93,7 @@ for index, row in tqdm(data.iterrows()):
     data.at[index, 'stance'] = predicted_label
     
     # Save every 1000 rows
-    if index % 100 == 0:
+    if ii % 100 == 0:
         print(generated_text)
         # Create a backup of the old save
         if os.path.exists(save_path):
@@ -103,3 +102,9 @@ for index, row in tqdm(data.iterrows()):
         # Save the data to the path
         data.to_pickle(save_path)
     ii += 1
+
+if os.path.exists(save_path):
+    shutil.copyfile(save_path, backup_path)
+            
+# Save the data to the path
+data.to_pickle(save_path)

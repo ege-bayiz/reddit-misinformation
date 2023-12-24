@@ -40,7 +40,7 @@ base_model.config.pretraining_tp = 1
 
 print(base_model.hf_device_map)
 
-base_text_gen = pipeline(task="text-generation", model=base_model, tokenizer=llama_tokenizer, max_new_tokens=5)
+base_text_gen = pipeline(task="text-generation", model=base_model, tokenizer=llama_tokenizer, max_new_tokens=8)
 
 query_head = "You are a helpful, respectful, and honest assistant that detects the stance of a comment with respect to its parent. Stance detection is the process of determining whether the author of a comment is in support of or against a given parent. You are provided with:\n post: the text you that is the root of discussion.\n parent:  the text which the comment is a reply towards.\n comment: text that you identify the stance from.\n\nYou will return the stance of the comment against the parent. Only return the stance against the parent and not the original post. Always answer from the possible options given below: \n support: The comment has a positive or supportive attitude towards the post, either explicitly or implicitly. \n against: The comment opposes or criticizes the post, either explicitly or implicitly. \n none: The comment is neutral or does not have a stance towards the post. \n unsure: It is not possible to make a decision based on the information at hand."
 #query = f"<SYS> {query_head} </SYS>" + "\n\n" + "post: " + row['submission_text'] + "\n" + "parent: " + row['body_parent'] + "\n" + "comment: " + row['body_child'] + "\n" + "stance: "
@@ -62,13 +62,13 @@ peft_parameters = LoraConfig(
 # Training Params
 train_params = TrainingArguments(
     output_dir="./results_modified",
-    num_train_epochs=4,
+    num_train_epochs=2,
     per_device_train_batch_size=1,
     gradient_accumulation_steps=1,
     optim="paged_adamw_32bit",
     save_steps=500,
     logging_steps=100,
-    learning_rate=1e-4,
+    learning_rate=4e-4,
     weight_decay=0.001,
     fp16=False,
     bf16=False,
@@ -94,5 +94,5 @@ fine_tuning = SFTTrainer(
 
 # Training
 fine_tuning.train()
-refined_model = "stance-detection/llama-2-7b-reddit_stance_det_lora" #You can give it your own name
+refined_model = "stance-detection/trained_lora/llama-2-7b-reddit_stance_det_lora_2" #You can give it your own name
 fine_tuning.model.save_pretrained(refined_model)
