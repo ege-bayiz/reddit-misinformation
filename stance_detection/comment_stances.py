@@ -24,7 +24,7 @@ Tier_1=Tier_1[Tier_1['sub']!='politics']
 # Min number of words in body (3 right now)
 Tier_1=Tier_1[Tier_1['body'].apply(lambda x: len(x.split()))>2]
 # Years that you want your tier in
-Year=[2018]
+Year=[2016]
 Tier_1=Tier_1[Tier_1['Y'].isin(Year)]
 
 # Some more filters on tiers if needed
@@ -37,7 +37,7 @@ Tier_1  = Tier_1.loc[Tier_1['author'].isin(Tier_1_10plus['author'].to_list())]
 data = Tier_1
 
 ## Loading the models
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6,7"
 
 print(f'running on cuda device {torch.cuda.current_device()}')
 
@@ -78,8 +78,8 @@ query_head = "You are a helpful, respectful, and honest assistant that detects t
 
 data['stance'] = 'unsure'
 # Define the save path and backup path
-save_path = 'stance_detection/labeled_no_politics/2018/Tier_1.pickle'
-backup_path = 'stance_detection/labeled_no_politics/2018/Tier_1_backup.pickle'
+save_path = 'stance_detection/labeled_no_politics/2016/Tier_1.pickle'
+backup_path = 'stance_detection/labeled_no_politics/2016/Tier_1_backup.pickle'
 
 ii = 0
 # Iterate over each row and apply the placeholder function
