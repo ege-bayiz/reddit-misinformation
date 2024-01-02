@@ -165,4 +165,5 @@ stance_detection/DEBAGREEMENT_data
 stance_detection/curated_datasets
 stance_detection/llama-2-7b-reddit_stance_det_2
 stance_detection/labeled_no_politics
+user_embedding/datasets
 reddit_data
