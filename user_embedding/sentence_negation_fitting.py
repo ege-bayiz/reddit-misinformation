@@ -8,7 +8,7 @@ import os
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
 class linearRegression(torch.nn.Module):
     def __init__(self, inputSize, outputSize):
@@ -40,7 +40,7 @@ validation_loader = torch.utils.data.DataLoader(data_test, batch_size=4, shuffle
 inputDim = x_train.size(1)
 outputDim = y_train.size(1)
 learningRate = 10.0   ## A high learning rate is used on purpose as the model is simply a constrained linear regression
-epochs = 16
+epochs = 32
 
 model = linearRegression(inputDim, outputDim)
 if torch.cuda.is_available():

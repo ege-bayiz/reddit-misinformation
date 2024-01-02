@@ -2,9 +2,9 @@ import torch
 import numpy as np
 from scipy.linalg import eigh
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
-model_path = 'user_embedding/models/negation_mat_20231216_141822_14'
+model_path = 'user_embedding/models/negation_mat_20231227_165538_14'
 # Load the PyTorch model
 model = torch.load(model_path)
 

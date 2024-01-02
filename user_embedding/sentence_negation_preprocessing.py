@@ -5,7 +5,7 @@ from datasets import load_dataset
 import pandas as pd
 from pprint import pprint
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
 #Mean Pooling - Take attention mask into account for correct averaging
 def mean_pooling(model_output, attention_mask):
@@ -23,8 +23,8 @@ def encode_sentences(sentences):
 
 
 # Load model from HuggingFace Hub
-tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L12-v2')
-model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L12-v2')
+tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-distilroberta-v1')
+model = AutoModel.from_pretrained('sentence-transformers/all-distilroberta-v1')
 
 dataset = load_dataset('jinaai/negation-dataset')
 df_train = pd.DataFrame(dataset['train'])
