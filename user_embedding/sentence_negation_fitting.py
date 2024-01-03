@@ -8,7 +8,7 @@ import os
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 class linearRegression(torch.nn.Module):
     def __init__(self, inputSize, outputSize):
@@ -46,7 +46,7 @@ model = linearRegression(inputDim, outputDim)
 if torch.cuda.is_available():
     model.cuda()
 
-loss_fn = torch.nn.CosineEmbeddingLoss() 
+loss_fn = torch.nn.MSELoss() 
 optimizer = torch.optim.SGD(model.parameters(), lr=learningRate)
 
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -71,7 +71,7 @@ for epoch in range(epochs):
         outputs = model(inputs)
 
         # get loss for the predicted output
-        loss = loss_fn(outputs, des_outputs, torch.ones(inputs.size(0)).cuda())
+        loss = loss_fn(outputs, des_outputs)
         # get gradients w.r.t to parameters
         loss.backward()
 
@@ -96,7 +96,7 @@ for epoch in range(epochs):
         for i, vdata in enumerate(validation_loader):
             vinputs, vlabels = vdata
             voutputs = model(vinputs)
-            vloss = loss_fn(voutputs, vlabels, torch.ones(inputs.size(0)).cuda())
+            vloss = loss_fn(voutputs, vlabels)
             running_vloss += vloss
 
     avg_vloss = running_vloss / (i + 1)
