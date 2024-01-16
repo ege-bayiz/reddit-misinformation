@@ -37,7 +37,7 @@ Tier_1  = Tier_1.loc[Tier_1['author'].isin(Tier_1_10plus['author'].to_list())]
 data = Tier_1
 
 ## Loading the models
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
 print(f'running on cuda device {torch.cuda.current_device()}')
 
