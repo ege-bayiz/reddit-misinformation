@@ -1,5 +1,5 @@
 # The Effect of Uncredible News on User Clusters on Reddit
-Analysis of uncredible and highly biased news in Reddit user clusters.
+Analysis of uncredible and highly biased news in Reddit user clusters. This is a condensed version of the repository with some of the required data embedded in it for review purposes.
 
 ## How to run the codes?
 
