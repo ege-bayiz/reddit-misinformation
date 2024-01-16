@@ -1,5 +1,5 @@
 # The Effect of Uncredible News on User Clusters on Reddit
-Modelling and prediciton of misinformation propagation in the social news aggregation website Reddit.
+Analysis of uncredible and highly biased news in Reddit user clusters.
 
 ## How to run the codes?
 
