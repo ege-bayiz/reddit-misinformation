@@ -12,5 +12,5 @@ The folder `user_embedding/` includes codes for both negation training and clust
 
 
 ### Cluster analysis
-Lastly, all of the user clustering and analysis are in a single python notebook `user_embedding/user_embedding.ipynb`. This data requires the input of reddit user comment and post embedding dataframes. The posts need to be pre-embedded with the `all-distilroberta-v1` model which can be found here (https://huggingface.co/sentence-transformers/all-distilroberta-v1). They also need to be preassigned with news credibility and biases from the Ad Fontes Media dataset (`https://adfontesmedia.com/`).
+Lastly, all of the user clustering and analysis are in a single python notebook `user_embedding/user_embedding.ipynb`. This data requires the input of reddit user comment and post embedding dataframes. The posts need to be pre-embedded with the `all-distilroberta-v1` model which can be found here (https://huggingface.co/sentence-transformers/all-distilroberta-v1). They also need to be preassigned with news credibility and biases from the Ad Fontes Media dataset (https://adfontesmedia.com/).
 
